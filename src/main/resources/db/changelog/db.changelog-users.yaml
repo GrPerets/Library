@@ -1,0 +1,180 @@
+databaseChangeLog:
+  - logicalFilePath: db/changelog/db.changelog-users.yaml
+  - changeSet:
+      id: 1
+      author: hryhorii perets
+      changes:
+        - createTable:
+            tableName: managers
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: managername
+                  type: varchar(100)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: varchar(100)
+                  constraints:
+                    unique: fals
+                    nullable: false
+              - column:
+                  name: last_name
+                  type: varchar(100)
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: password
+                  type: varchar(256)
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(256)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: phone
+                  type: varchar(100)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: created
+                  type: TIMESTAMP
+                  defaultValue: CURRENT_TIMESTAMP()
+                  constraints:
+                    nullable: true
+              - column:
+                  name: updated
+                  type: TIMESTAMP
+                  defaultValue: CURRENT_TIMESTAMP()
+                  constraints:
+                    nullable: true
+              - column:
+                  name: status
+                  type: varchar(50)
+                  defaultValue: NOT_ACTIVE
+  - changeSet:
+      id: 2
+      author: hryhorii perets
+      changes:
+        - createTable:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: rolename
+                  type: varchar(50)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: created
+                  type: TIMESTAMP
+                  defaultValue: CURRENT_TIMESTAMP()
+                  constraints:
+                    nullable: true
+              - column:
+                  name: updated
+                  type: TIMESTAMP
+                  defaultValue: CURRENT_TIMESTAMP()
+                  constraints:
+                    nullable: true
+              - column:
+                  name: status
+                  type: varchar(50)
+                  defaultValue: ACTIVE
+  - changeSet:
+      id: 3
+      author: hryhorii perets
+      changes:
+        - createTable:
+            tableName: managers_roles
+            columns:
+              - column:
+                  name: manager_id
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: role_id
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+  - changeSet:
+      id: 4
+      author: hryhorii perets
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: manager_id
+            baseTableName: managers_roles
+            constraintName: fk_managers_roles_manager
+            deferrable:  false
+            initiallyDeferred:  false
+            onDelete:  CASCADE
+            onUpdate:  RESTRICT
+            referencedColumnNames: id
+            referencedTableName: managers
+            validate:  true
+  - changeSet:
+      id: 5
+      author: hryhorii perets
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: role_id
+            baseTableName: managers_roles
+            constraintName: fk_managers_roles_role
+            deferrable:  false
+            initiallyDeferred:  false
+            onDelete:  CASCADE
+            onUpdate:  RESTRICT
+            referencedColumnNames: id
+            referencedTableName: roles
+            validate:  true
+  - changeSet:
+      id: 6
+      author: hryhorii perets
+      comment: "Some comments go here"
+      changes:
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: rolename
+                  value: "ROLE_ADMIN"
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: rolename
+                  value: "ROLE_USER"
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: rolename
+                  value: "ROLE_MANAGER"
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: rolename
+                  value: "ROLE_CUSTOMER"

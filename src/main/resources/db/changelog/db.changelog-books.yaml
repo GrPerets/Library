@@ -1,0 +1,124 @@
+databaseChangeLog:
+  - logicalFilePath: db/changelog/db.changelog-books.yaml
+  - changeSet:
+      id: 1
+      author: hryhorii perets
+      changes:
+        - createTable:
+            tableName: products
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: productname
+                  type: varchar(100)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: price
+                  type: DECIMAL
+              - column:
+                  name: created
+                  type: TIMESTAMP
+                  defaultValue: CURRENT_TIMESTAMP()
+                  constraints:
+                    nullable: true
+              - column:
+                  name: updated
+                  type: TIMESTAMP
+                  defaultValue: CURRENT_TIMESTAMP()
+                  constraints:
+                    nullable: true
+              - column:
+                  name: status
+                  type: varchar(50)
+                  defaultValue: NOT_AVAILABLE
+  - changeSet:
+      id: 2
+      author: hryhorii perets
+      changes:
+        - createTable:
+            tableName: categories
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: categoryname
+                  type: varchar(50)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: created
+                  type: TIMESTAMP
+                  defaultValue: CURRENT_TIMESTAMP()
+                  constraints:
+                    nullable: true
+              - column:
+                  name: updated
+                  type: TIMESTAMP
+                  defaultValue: CURRENT_TIMESTAMP()
+                  constraints:
+                    nullable: true
+              - column:
+                  name: status
+                  type: varchar(50)
+                  defaultValue: NOT_AVAILABLE
+  - changeSet:
+      id: 3
+      author: hryhorii perets
+      changes:
+        - createTable:
+            tableName: products_category
+            columns:
+              - column:
+                  name: product_id
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: category_id
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+  - changeSet:
+      id: 4
+      author: hryhorii perets
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: product_id
+            baseTableName: products_category
+            constraintName: fk_products_category_product
+            deferrable:  false
+            initiallyDeferred:  false
+            onDelete:  CASCADE
+            onUpdate:  RESTRICT
+            referencedColumnNames: id
+            referencedTableName: products
+            validate:  true
+  - changeSet:
+      id: 5
+      author: hryhorii perets
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: category_id
+            baseTableName: products_category
+            constraintName: fk_products_category_category
+            deferrable:  false
+            initiallyDeferred:  false
+            onDelete:  CASCADE
+            onUpdate:  RESTRICT
+            referencedColumnNames: id
+            referencedTableName: categories
+            validate:  true
