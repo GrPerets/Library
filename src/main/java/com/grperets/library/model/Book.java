@@ -22,9 +22,6 @@ public class Book extends BaseEntity{
     private String yearPublishing;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinTable(name = "books_user",
-            joinColumns = {@JoinColumn(name = "book_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")})
-    //@JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id")
     private User user;
 }

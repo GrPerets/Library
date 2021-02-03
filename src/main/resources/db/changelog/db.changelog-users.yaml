@@ -5,7 +5,7 @@ databaseChangeLog:
       author: hryhorii perets
       changes:
         - createTable:
-            tableName: managers
+            tableName: users
             columns:
               - column:
                   name: id
@@ -15,7 +15,7 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: managername
+                  name: username
                   type: varchar(100)
                   constraints:
                     unique: true
@@ -107,10 +107,10 @@ databaseChangeLog:
       author: hryhorii perets
       changes:
         - createTable:
-            tableName: managers_roles
+            tableName: users_roles
             columns:
               - column:
-                  name: manager_id
+                  name: user_id
                   type: BIGINT
                   constraints:
                     primaryKey: true
@@ -124,15 +124,15 @@ databaseChangeLog:
       author: hryhorii perets
       changes:
         - addForeignKeyConstraint:
-            baseColumnNames: manager_id
-            baseTableName: managers_roles
-            constraintName: fk_managers_roles_manager
+            baseColumnNames: user_id
+            baseTableName: users_roles
+            constraintName: fk_users_roles_user
             deferrable:  false
             initiallyDeferred:  false
             onDelete:  CASCADE
             onUpdate:  RESTRICT
             referencedColumnNames: id
-            referencedTableName: managers
+            referencedTableName: users
             validate:  true
   - changeSet:
       id: 5
@@ -140,8 +140,8 @@ databaseChangeLog:
       changes:
         - addForeignKeyConstraint:
             baseColumnNames: role_id
-            baseTableName: managers_roles
-            constraintName: fk_managers_roles_role
+            baseTableName: users_roles
+            constraintName: fk_users_roles_role
             deferrable:  false
             initiallyDeferred:  false
             onDelete:  CASCADE
@@ -171,10 +171,10 @@ databaseChangeLog:
             columns:
               - column:
                   name: rolename
-                  value: "ROLE_MANAGER"
+                  value: "ROLE_READER"
         - insert:
             tableName: roles
             columns:
               - column:
                   name: rolename
-                  value: "ROLE_CUSTOMER"
+                  value: "ROLE_GUEST"

@@ -25,9 +25,13 @@ public class User extends BaseEntity{
     @Column(name = "email")
     private String email;
 
+    @Column(name = "phone")
+    private String phone;
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,  fetch = FetchType.EAGER)
     private List<Book> books;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "users_roles",
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
