@@ -13,7 +13,7 @@ public class BookDTO {
     private String author;
     private String publisher;
     private int yearPublishing;
-    private Status status;
+    //private Status status;
 
     public Book toBook(){
         Book book = new Book();
@@ -22,7 +22,7 @@ public class BookDTO {
         book.setAuthor(this.author);
         book.setPublisher(this.publisher);
         book.setYearPublishing(this.yearPublishing);
-        book.setStatus(this.status);
+        //book.setStatus(this.status);
         return book;
     }
 
@@ -33,7 +33,7 @@ public class BookDTO {
         bookDTO.setAuthor(book.getAuthor());
         bookDTO.setPublisher(book.getPublisher());
         bookDTO.setYearPublishing(book.getYearPublishing());
-        bookDTO.setStatus(book.getStatus());
+        //bookDTO.setStatus(book.getStatus());
         return bookDTO;
     }
 }

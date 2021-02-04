@@ -1,7 +1,11 @@
 package com.grperets.library.controller;
 
+import com.grperets.library.dto.BookDTO;
 import com.grperets.library.dto.UserDTO;
+import com.grperets.library.model.Book;
+import com.grperets.library.model.Status;
 import com.grperets.library.model.User;
+import com.grperets.library.service.BookService;
 import com.grperets.library.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,10 +23,12 @@ import java.util.stream.Collectors;
 public class UsersRestControllerV1 {
 
     private final UserService userService;
+    private final BookService bookService;
 
     @Autowired
-    public UsersRestControllerV1(UserService userService) {
+    public UsersRestControllerV1(UserService userService, BookService bookService) {
         this.userService = userService;
+        this.bookService = bookService;
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -87,5 +93,46 @@ public class UsersRestControllerV1 {
         return new ResponseEntity<>(userDTOS, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "{id}/books", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<BookDTO>> getUserBooks(@PathVariable("id") Long id){
+        if (id == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        User user = this.userService.getById(id);
+        if (user == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        List<Book> books = user.getBooks();
+        List<BookDTO> bookDTOS = books.stream().map(book -> BookDTO.fromBook(book)).collect(Collectors.toList());
+        return new ResponseEntity<>(bookDTOS, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "{userId}/books/{bookId}/return", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<BookDTO>> returnBook(@PathVariable("userId") Long userId, @PathVariable("bookId") Long bookId){
+        if (userId == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        if (bookId == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        User user = this.userService.getById(userId);
+        if (user == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        Book book = this.bookService.getById(bookId);
+        if (book == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        book.setStatus(Status.AVAILABLE);
+        book.setUser(null);
+        this.bookService.update(book);
+
+
+        List<BookDTO> bookDTOS = user.getBooks().stream().filter(y->!(y.getId().equals(bookId))).map(x->BookDTO.fromBook(x)).collect(Collectors.toList());
+
+        return new ResponseEntity<>(bookDTOS, HttpStatus.OK);
+
+    }
 
 }

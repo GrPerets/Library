@@ -52,7 +52,6 @@ public class BooksRestControllerV1 {
         if (bindingResult.hasErrors()){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        bookDTO.setStatus(Status.AVAILABLE);
         this.bookService.create(bookDTO.toBook());
         return new ResponseEntity<>(bookDTO, HttpStatus.CREATED);
     }
@@ -115,6 +114,9 @@ public class BooksRestControllerV1 {
         return new ResponseEntity<>(bookDTO, HttpStatus.OK);
     }
 
+
+    /*
+
     @RequestMapping(value = "{id}/return", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BookDTO> returnBook(@PathVariable("id") Long id, @RequestBody UserDTO userDTO){
         if (id == null){
@@ -128,11 +130,14 @@ public class BooksRestControllerV1 {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-
         book.setUser(null);
         book.setStatus(Status.AVAILABLE);
         this.bookService.update(book);
         BookDTO bookDTO = BookDTO.fromBook(book);
         return new ResponseEntity<>(bookDTO, HttpStatus.OK);
     }
+
+     */
+
+
 }
