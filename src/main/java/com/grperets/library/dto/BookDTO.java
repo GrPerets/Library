@@ -12,7 +12,7 @@ public class BookDTO {
     private String bookname;
     private String author;
     private String publisher;
-    private String yearPublishing;
+    private int yearPublishing;
     private Status status;
 
     public Book toBook(){

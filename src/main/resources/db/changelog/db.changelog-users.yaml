@@ -16,37 +16,37 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: username
-                  type: varchar(100)
+                  type: varchar(25)
                   constraints:
                     unique: true
                     nullable: false
               - column:
                   name: first_name
-                  type: varchar(100)
+                  type: varchar(50)
                   constraints:
                     unique: fals
                     nullable: false
               - column:
                   name: last_name
-                  type: varchar(100)
+                  type: varchar(50)
                   constraints:
                     unique: false
                     nullable: false
               - column:
                   name: password
-                  type: varchar(256)
+                  type: varchar(255)
                   constraints:
                     unique: false
                     nullable: false
               - column:
                   name: email
-                  type: varchar(256)
+                  type: varchar(255)
                   constraints:
                     unique: true
                     nullable: false
               - column:
                   name: phone
-                  type: varchar(100)
+                  type: varchar(25)
                   constraints:
                     unique: true
                     nullable: false
@@ -64,7 +64,7 @@ databaseChangeLog:
                     nullable: true
               - column:
                   name: status
-                  type: varchar(50)
+                  type: varchar(25)
                   defaultValue: NOT_ACTIVE
   - changeSet:
       id: 2
@@ -100,7 +100,7 @@ databaseChangeLog:
                     nullable: true
               - column:
                   name: status
-                  type: varchar(50)
+                  type: varchar(25)
                   defaultValue: ACTIVE
   - changeSet:
       id: 3

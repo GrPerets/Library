@@ -34,7 +34,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: year_publishing
-                  type: varchar(100)
+                  type: INT
                   constraints:
                     unique: false
                     nullable: false
@@ -58,7 +58,7 @@ databaseChangeLog:
                     nullable: true
               - column:
                   name: status
-                  type: varchar(50)
+                  type: varchar(25)
                   defaultValue: NOT_AVAILABLE
   - changeSet:
       id: 2

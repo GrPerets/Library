@@ -11,10 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/api/v1/books")
@@ -43,8 +45,11 @@ public class BooksRestControllerV1 {
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<BookDTO> createBook(@RequestBody BookDTO bookDTO){
+    public ResponseEntity<BookDTO> createBook(@RequestBody @Valid BookDTO bookDTO, BindingResult bindingResult){
         if (bookDTO == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        if (bindingResult.hasErrors()){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         bookDTO.setStatus(Status.AVAILABLE);
@@ -52,17 +57,14 @@ public class BooksRestControllerV1 {
         return new ResponseEntity<>(bookDTO, HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "{id}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<BookDTO> updateBook(@PathVariable("id") Long id, @RequestBody BookDTO bookDTO){
-        if (id == null){
+    @RequestMapping(value = "", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<BookDTO> updateBook(@RequestBody @Valid BookDTO bookDTO, BindingResult bindingResult){
+        if (bookDTO == null){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        Book book = this.bookService.getById(id);
-        if (book == null){
-            this.bookService.create(bookDTO.toBook());
-            return new ResponseEntity<>(bookDTO, HttpStatus.CREATED);
+        if (bindingResult.hasErrors()){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        bookDTO.setId(id);
         this.bookService.update(bookDTO.toBook());
         return new ResponseEntity<>(bookDTO, HttpStatus.OK);
     }
@@ -86,11 +88,8 @@ public class BooksRestControllerV1 {
         if (books.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        //TODO
-        List<BookDTO> bookDTOS = new ArrayList<>();
-        for (Book book: books){
-            bookDTOS.add(BookDTO.fromBook(book));
-        }
+
+        List<BookDTO> bookDTOS = books.stream().map(book->BookDTO.fromBook(book)).collect(Collectors.toList());
         return new ResponseEntity<>(bookDTOS, HttpStatus.OK);
     }
 
@@ -106,8 +105,6 @@ public class BooksRestControllerV1 {
         if (book.getStatus().equals(Status.NOT_AVAILABLE)){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
-        //TODO
 
         User user = this.userService.getById(userDTO.getId());
 
@@ -132,13 +129,7 @@ public class BooksRestControllerV1 {
         }
 
 
-        //TODO
-
-        User user = this.userService.getById(userDTO.getId());
-        user.getBooks().remove(book);
-        this.userService.update(user);
-
-
+        book.setUser(null);
         book.setStatus(Status.AVAILABLE);
         this.bookService.update(book);
         BookDTO bookDTO = BookDTO.fromBook(book);

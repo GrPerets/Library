@@ -7,10 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/api/v1/users")
@@ -37,8 +39,11 @@ public class UsersRestControllerV1 {
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO){
+    public ResponseEntity<UserDTO> createUser(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult){
         if (userDTO == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        if (bindingResult.hasErrors()){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         this.userService.create(userDTO.toUser());
@@ -46,20 +51,14 @@ public class UsersRestControllerV1 {
 
     }
 
-    @RequestMapping(value = "{id}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserDTO> updateUser(@PathVariable("id") Long id, @RequestBody UserDTO userDTO){
-        if (id == null){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+    @RequestMapping(value = "", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserDTO> updateUser(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult){
         if (userDTO == null){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        User user = this.userService.getById(id);
-        if (user == null){
-            this.userService.create(userDTO.toUser());
-            return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
+        if (bindingResult.hasErrors()){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        userDTO.setId(id);
         this.userService.update(userDTO.toUser());
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
@@ -83,11 +82,8 @@ public class UsersRestControllerV1 {
         if (users.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        //TODO
-        List<UserDTO> userDTOS = new ArrayList<>();
-        for (User user: users){
-            userDTOS.add(UserDTO.fromUser(user));
-        }
+
+        List<UserDTO> userDTOS = users.stream().map(user->UserDTO.fromUser(user)).collect(Collectors.toList());
         return new ResponseEntity<>(userDTOS, HttpStatus.OK);
     }
 
